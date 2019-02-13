@@ -1,3 +1,26 @@
+
+
+### What we want to be able to do
+- users
+  - sign up
+    - email validation/verification
+  - log in
+  - update profile info
+  - view profiles
+    - map of general location (not google maps)
+- potatoes 
+  - add
+  - view
+  - update
+  - delete
+- sell potatoes (paypal)
+- buy potatoes (paypal)
+
+
+
+
+# React App Stuff down here
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
