@@ -59,7 +59,6 @@ class Ping(Resource):
         print(request.form['message'])
         return {'request': 'put'}
 
-
     def delete(self):
         return {'request': 'delete'}
 
@@ -102,6 +101,7 @@ api.add_resource(Secret, '/secret')
 
 
 class UserSignUp(Resource):
+    # TODO: Put all user stuff in here under different request types
     def post(self):
         # TODO: Use PUT instead
         # TODO: validate
@@ -125,6 +125,49 @@ class UserSignUp(Resource):
 api.add_resource(UserSignUp, '/sign_up')
 
 
+class GetUser(Resource):
+    def get(self, id):
+        found = User.query.filter_by(id=id).first()
+
+        if not found:
+            return {'message': 'user not found'}
+
+        current = {
+            'id': found.id,
+            'email': found.email,
+            'name': found.name,
+            'address': found.address,
+            'rating': found.rating
+        }
+
+        return {'user': current}
+
+
+api.add_resource(GetUser, '/user/<id>')
+
+
+class GetUsers(Resource):
+    def get(self):
+        all_users = User.query.all()
+
+        response = []
+
+        for user in all_users:
+            current = {
+                'id': user.id,
+                'email': user.email,
+                'name': user.name,
+                'address': user.address,
+                'rating': user.rating
+            }
+            response.append(current)
+
+        return {'users': response}
+
+
+api.add_resource(GetUsers, '/user')
+
+
 def pretty_print_POST(req):
     """
     At this point it is completely built and ready
@@ -143,6 +186,20 @@ def pretty_print_POST(req):
 
 
 class PotatoResource(Resource):
+    def put(self):
+        new_potato = Potatoes(
+            owner=request.form['id'],
+            type=request.form['type'],
+            amount=request.form['amount'],
+            price_per_kilo=request.form['price'],
+            description=request.form['description'],
+            photo_path=None
+        )
+
+        db.session.add(new_potato)
+        db.session.commit()
+        return {'message': 'new {} potato added'.format(request.form['type'])}
+
     def get(self):
         potatoes = Potatoes.query.all()
 
@@ -172,12 +229,51 @@ api.add_resource(PotatoResource, '/potatoes')
 
 class SinglePotatoResource(Resource):
     def get(self, id):
-        potato = Potatoes.query.filter_by(id=id).first()
+        pot = Potatoes.query.filter_by(id=id).first()
 
-        return potato
+        current = {
+            'title': pot.type,
+            'image': pot.photo_path,
+            'price': float(pot.price_per_kilo),
+            'amount': float(pot.amount),
+            'description': pot.description,
+            'location': 'No location',
+            'owner': pot.owner,
+            'id': pot.id
+        }
+
+        return [current]
 
 
 api.add_resource(SinglePotatoResource, '/potatoes/<id>')
+
+
+class UsersPotatoesResource(Resource):
+    def get(self, user_id):
+        potatoes = Potatoes.query.filter_by(owner=user_id).all()
+
+        data = []
+
+        for pot in potatoes:
+            current = {
+                'title': pot.type,
+                'image': pot.photo_path,
+                'price': float(pot.price_per_kilo),
+                'amount': float(pot.amount),
+                'description': pot.description,
+                'location': 'No location',
+                'owner': pot.owner,
+                'id': pot.id
+            }
+            data.append(current)
+
+        response = make_response(jsonify(data))
+        response.headers['Access-Control-Allow-Origin'] = '*'  # TODO: put backend on diff server?
+
+        return response
+
+
+api.add_resource(UsersPotatoesResource, '/potatoes+user=<user_id>')
 
 
 class SignUpResource(Resource):
@@ -204,7 +300,7 @@ class Potatoes(db.Model):
     amount = db.Column('amount', db.String(2000), nullable=False)
     price_per_kilo = db.Column('price', db.DECIMAL(10, 2), nullable=False)
     description = db.Column('description', db.String(200), nullable=False)
-    photo_path = db.Column('photo_path', db.String(300), nullable=False)
+    photo_path = db.Column('photo_path', db.String(300), nullable=True)
 
 
 class User(db.Model):

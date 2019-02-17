@@ -56,25 +56,5 @@ export class UserSignUp extends React.Component {
                 <input type="submit" value="Submit" onClick={this.handleSubmit}/>
             </form>
         );
-
-
-        // return (
-        //     <form method="POST" action="http://localhost:5000/sign_up" className="bg-light p-3">
-        //         <input type="hidden" name="_method" value="put"/>
-        //         <div className="form-group">
-        //             <label htmlFor="usernameInput">Email</label>
-        //             <input type="email" id="emailInput" placeholder="email" name="email" autoFocus/>
-        //         </div>
-        //         <div className="form-group">
-        //             <label htmlFor="passwordInput">Password</label>
-        //             <input type="password" id="passwordInput" placeholder="password" name="password"/>
-        //         </div>
-        //         <div className="form-group">
-        //             <label htmlFor="passwordInput">Your name</label>
-        //             <input type="text" id="nameInput" placeholder="Your name" name="name"/>
-        //         </div>
-        //         <input type="submit" value="Log In"/>
-        //     </form>
-        // )
     }
 }

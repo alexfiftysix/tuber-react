@@ -7,17 +7,22 @@ export class Deck extends React.Component {
         this.state = {
             cards: null
         };
-        console.log(this.state);
+
+        this.update_state = this.update_state.bind(this);
     }
 
-    componentDidMount() {
+
+    update_state() {
+        const url = 'http://localhost:5000/' + this.props.rest_route;
+
         // Fetches data from rest API, updates cards
-        fetch('http://localhost:5000/rest-2')
+        fetch(url)
             .then(response => response.json())
             .then(data => this.setState({cards: data}));
     }
 
     renderCards() {
+        this.update_state();
         if (this.state.cards === null) {
             return <h1>Yes, we have no potatoes</h1>;
         }
@@ -37,7 +42,6 @@ export class Deck extends React.Component {
 
     render() {
         const cards = this.renderCards(this.props.cards);
-        console.log(this.state);
 
         return (
             <div className="deck">
