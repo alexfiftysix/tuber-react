@@ -1,10 +1,5 @@
 import React, {Component} from 'react';
 import './App.css';
-import {Link} from 'react-router-dom';
-import {UserSignUp} from "./UserSignUp";
-import {NewPotatoForm} from "./NewPotatoForm";
-import {Deck} from "./Deck";
-import {PotatoSelector} from "./PotatoSelector";
 import {Nav} from './Nav'
 
 class App extends Component {

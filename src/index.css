@@ -18,7 +18,12 @@ code {
 }
 
 .nav {
-    width: 600px;
+    width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
+    border-bottom: 1px solid rgba(204, 235, 235, 0.5);
+}
+
+.nav > li {
+    margin: 0.5rem 2rem;
 }

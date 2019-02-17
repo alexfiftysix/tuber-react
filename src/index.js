@@ -5,9 +5,10 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {BrowserRouter, Route} from "react-router-dom";
-import {NewPotatoForm} from "./NewPotatoForm";
-import {PotatoSelector} from "./PotatoSelector";
+import {NewPotatoForm} from './NewPotatoForm';
+import {PotatoSelector} from './PotatoSelector';
 import {Home} from './Home'
+import {Profile} from './Profile';
 
 ReactDOM.render((
     <BrowserRouter>
@@ -16,6 +17,10 @@ ReactDOM.render((
             <Route path={'/home'} component={Home}/>
             <Route path="/about" component={NewPotatoForm}/>
             <Route path="/repos" component={PotatoSelector}/>
+            <Route
+                path="/profile/:id"
+                render={(props) => <Profile {...props} profile_route={"user/1"} />}
+            />
         </div>
     </BrowserRouter>
 ), document.getElementById('root'));
