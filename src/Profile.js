@@ -1,5 +1,6 @@
 import React from 'react'
 import {Deck} from './Deck';
+import {Link} from "react-router-dom";
 
 // Displays information about an individual profile (Name, locaion) and information on all potatoes they're selling
 export class Profile extends React.Component {
@@ -18,7 +19,6 @@ export class Profile extends React.Component {
     }
 
     componentDidMount() {
-        console.log("hey");
         let url = 'http://localhost:5000/user/' + this.props.match.params.id;
 
         fetch(url)
@@ -27,7 +27,6 @@ export class Profile extends React.Component {
         // TODO: Seems dodgy taking data.user
     }
 
-
     render() {
         return (
             <div>
@@ -35,6 +34,7 @@ export class Profile extends React.Component {
                 <h1>{this.state.profile.email}</h1>
                 <h1>{this.state.profile.address}</h1>
                 <h1>{this.state.profile.rating}</h1>
+                <li><Link to={"/profile/edit/" + this.state.profile.id}>Edit Profile</Link></li>
                 <Deck rest_route={'potatoes+user=' + this.state.profile.id} />
             </div>
         );
