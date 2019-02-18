@@ -13,14 +13,7 @@ import {Profile} from './Profile';
 ReactDOM.render((
     <BrowserRouter>
         <div>
-            <Route path="/" component={App}/>
-            <Route path={'/home'} component={Home}/>
-            <Route path="/about" component={NewPotatoForm}/>
-            <Route path="/repos" component={PotatoSelector}/>
-            <Route
-                path="/profile/:id"
-                render={(props) => <Profile {...props} profile_route={"user/1"} />}
-            />
+            <App></App>
         </div>
     </BrowserRouter>
 ), document.getElementById('root'));

@@ -53,31 +53,31 @@ export class NewPotatoForm extends React.Component {
         return (
             <form>
                 <label>
-                    User ID:
+                    <p>User ID:</p>
                     <input type="number" value={this.state.id} onChange={this.handleChange} name="id"/>
                 </label>
 
                 <label>
-                    type:
+                    <p>type:</p>
                     <input type="text" value={this.state.type} onChange={this.handleChange} name="type"/>
                 </label>
 
                 <label>
-                    amount (kg):
+                    <p>amount (kg):</p>
                     <input type="number" step="0.01" value={this.state.amount} onChange={this.handleChange} name="amount"/>
                 </label>
 
                 <label>
-                    price per kg:
+                    <p>price per kg:</p>
                     <input type="number" step="0.01" value={this.state.price} onChange={this.handleChange} name="price"/>
                 </label>
 
                 <label>
-                    description:
+                    <p>description:</p>
                     <input type="text" value={this.state.description} onChange={this.handleChange} name="description"/>
                 </label>
 
-                <input type="submit" value="Submit" onClick={this.handleSubmit}/>
+                <button onClick={this.handleSubmit}>Submit</button>
             </form>
         );
     }
