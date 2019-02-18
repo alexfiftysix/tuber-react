@@ -1,5 +1,7 @@
 import React from 'react'
 
+// TODO: link to this from specific profile
+// Form for adding a new potato to a user
 export class NewPotatoForm extends React.Component {
 
     constructor(props) {
@@ -28,7 +30,7 @@ export class NewPotatoForm extends React.Component {
         };
 
         let data = new FormData();
-        data.append('id', this.state.id);
+        data.append('id', this.props.match.params.user_id);
         data.append('type', this.state.type);
         data.append('amount', this.state.amount);
         data.append('price', this.state.price);
@@ -52,10 +54,10 @@ export class NewPotatoForm extends React.Component {
     render() {
         return (
             <form className={'form'}>
-                <label>
-                    <p>User ID:</p>
-                    <input type="number" value={this.state.id} onChange={this.handleChange} name="id"/>
-                </label>
+                {/*<label>*/}
+                    {/*<p>User ID:</p>*/}
+                    {/*<input type="number" value={this.state.id} onChange={this.handleChange} name="id"/>*/}
+                {/*</label>*/}
 
                 <label>
                     <p>type:</p>

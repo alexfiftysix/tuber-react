@@ -16,7 +16,8 @@ class App extends Component {
                 <Nav/>
                 <div className={'content'}>
                     <Route path={'/home'} component={Home}/>
-                    <Route path="/add_potato" component={NewPotatoForm}/>
+                    {/*<Route path="/add_potato" component={NewPotatoForm}/>*/}
+                    <Route path="/add_potato/:user_id" component={NewPotatoForm}/>
                     <Route path="/repos" component={PotatoSelector}/>
                     <Route path="/profile/:id" component={Profile}/>
                     <Route path="/profile+update/:id" component={UpdateProfileForm}/>

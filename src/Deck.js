@@ -24,7 +24,7 @@ export class Deck extends React.Component {
     }
 
     renderCards() {
-        this.update_state();
+        this.update_state(); // TODO: Get rid of this. Why is it required? Rewrite whole class?
         if (this.state.cards === null) {
             return <h1>Yes, we have no potatoes</h1>;
         }

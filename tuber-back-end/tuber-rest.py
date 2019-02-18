@@ -159,8 +159,6 @@ class SingleUserResource(Resource):
 
         return current
 
-        # TODO: actual patch logic
-
     def post(self):
         # TODO: Add this / check this
         # TODO: validate
@@ -346,6 +344,7 @@ class SingleAddressResource(Resource):
         db.session.add(new_address)
         db.session.commit()
         return new_address
+
 
 api.add_resource(SingleAddressResource, '/address/id')
 
