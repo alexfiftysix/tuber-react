@@ -13,8 +13,7 @@ export class Profile extends React.Component {
         super(props);
 
         this.state = {
-            profile: {},
-            cards: null
+            profile: {}
         };
     }
 
@@ -28,12 +27,12 @@ export class Profile extends React.Component {
     }
 
     render() {
+        console.log('ID: ' + this.state.profile.id);
         return (
             <div>
                 <h1>{this.state.profile.name}</h1>
                 <h1>{this.state.profile.email}</h1>
                 <h1>{this.state.profile.address}</h1>
-                <h1>{this.state.profile.rating}</h1>
                 <li><Link to={"/profile+update/" + this.state.profile.id}>Edit Profile</Link></li>
                 <Deck rest_route={'potatoes+user=' + this.state.profile.id} />
                 <li><Link to={"/add_potato/" + this.state.profile.id}>Add potatoes</Link></li>

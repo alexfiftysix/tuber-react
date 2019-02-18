@@ -15,6 +15,7 @@
   - delete
 - sell potatoes (paypal)
 - buy potatoes (paypal)
+- Seach for potatoes
 
 
 

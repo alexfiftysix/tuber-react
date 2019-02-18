@@ -203,23 +203,6 @@ class GetUsers(Resource):
 api.add_resource(GetUsers, '/user')
 
 
-def pretty_print_POST(req):
-    """
-    At this point it is completely built and ready
-    to be fired; it is "prepared".
-
-    However pay attention at the formatting used in
-    this function because it is programmed to be pretty
-    printed and may differ from the actual request.
-    """
-    print('{}\n{}\n{}\n\n{}'.format(
-        '-----------START-----------',
-        req.method + ' ' + req.url,
-        '\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items()),
-        req.body,
-    ))
-
-
 class PotatoResource(Resource):
     def post(self):
         # Add new potato
@@ -237,6 +220,7 @@ class PotatoResource(Resource):
         return {'message': 'new {} potato added'.format(request.form['type'])}
 
     def get(self):
+        # Get all potatoes
         potatoes = Potatoes.query.all()
 
         data = []

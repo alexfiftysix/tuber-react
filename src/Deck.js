@@ -7,14 +7,13 @@ export class Deck extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            cards: null
+            cards: []
         };
 
-        this.update_state = this.update_state.bind(this);
+        this.get_data = this.get_data.bind(this);
     }
 
-
-    update_state() {
+    get_data() {
         const url = 'http://localhost:5000/' + this.props.rest_route;
 
         // Fetches data from rest API, updates cards
@@ -23,12 +22,18 @@ export class Deck extends React.Component {
             .then(data => this.setState({cards: data}));
     }
 
-    renderCards() {
-        this.update_state(); // TODO: Get rid of this. Why is it required? Rewrite whole class?
-        if (this.state.cards === null) {
-            return <h1>Yes, we have no potatoes</h1>;
-        }
-        return this.state.cards.map((card) => {
+
+    componentDidMount() {
+        this.get_data();
+    }
+
+    componentDidUpdate() {
+        this.get_data();
+    }
+
+
+    render() {
+        const cards = this.state.cards.map((card) => {
             return (
                 <Card
                     key={'potato_' + card.id}
@@ -41,10 +46,6 @@ export class Deck extends React.Component {
                 />
             )
         });
-    }
-
-    render() {
-        const cards = this.renderCards(this.props.cards);
 
         return (
             <div className="deck">
