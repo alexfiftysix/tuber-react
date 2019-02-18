@@ -233,7 +233,8 @@ def pretty_print_POST(req):
 
 
 class PotatoResource(Resource):
-    def put(self):
+    def post(self):
+        # Add new potato
         new_potato = Potatoes(
             owner=request.form['id'],
             type=request.form['type'],
@@ -323,9 +324,42 @@ class UsersPotatoesResource(Resource):
 api.add_resource(UsersPotatoesResource, '/potatoes+user=<user_id>')
 
 
-class SignUpResource(Resource):
-    def put(self):
-        print(request.form['email'])
+class SingleAddressResource(Resource):
+    def get(self, id):
+        # ID of the owner of the address
+        user = User.query.filter_by(id=id).first()
+        if not user:
+            return {'message': 'no user with that id exists'}
+
+        address = Address.query.filter_by(id=user.address).first()
+        if not address:
+            return {'message': 'That user has no address listed'}
+
+        current = {
+            'unit_number': address.unit_number,
+            'street_number': address.street_number,
+            'street_name': address.street_name,
+            'suburb': address.suburb,
+            'country': address.country
+        }
+
+        return current
+
+    def post(self):
+        # POST is for creating new resources
+        # TODO: validation
+        new_address = {
+            'owner': request.form.get('owner'),
+            'unit_number': request.form.get('unit_number'),
+            'street_number': request.form.get('street_number'),
+            'street_name': request.form.get('street_name'),
+            'suburb': request.form.get('suburb'),
+            'country': request.form.get('country')
+        }
+
+        db.session.add(new_address)
+        db.session.commit()
+        return new_address
 
 
 class LogInResource(Resource):
@@ -340,9 +374,9 @@ api.add_resource(LogInResource, '/log_in')
 # Models #
 # ------ #
 class Potatoes(db.Model):
-    __tablename__ = 'potatoes'
+    __tablename__ = 'potato'
     id = db.Column('id', db.SmallInteger, primary_key=True)
-    owner = db.Column('owner', db.Integer, db.ForeignKey('users.id'), nullable=False)
+    owner = db.Column('owner', db.Integer, db.ForeignKey('user.id'), nullable=False)
     type = db.Column('type', db.String(200), nullable=False)
     amount = db.Column('amount', db.String(2000), nullable=False)
     price_per_kilo = db.Column('price', db.DECIMAL(10, 2), nullable=False)
@@ -352,24 +386,32 @@ class Potatoes(db.Model):
 
 class User(db.Model):
     # TODO: Just have email as PK?
-    __tablename__ = 'users'
+    __tablename__ = 'user'
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True, nullable=False)
     email = db.Column('email', db.String(250), unique=True, nullable=False)
     password = db.Column('password', db.String(250), unique=False, nullable=False)
     name = db.Column('name', db.String(250), nullable=True)
-    address = db.Column('address', db.Integer, db.ForeignKey('address.id'), nullable=True)
-    rating = db.Column('rating', db.DECIMAL(10, 2), nullable=True)
+    # rating = db.Column('rating', db.DECIMAL(10, 2), nullable=True)
     # Instead of storing rating, store Reviews as DB table linked to user, and generate rating accordingly
 
 
 class Address(db.Model):
     __tablename__ = 'address'
-    id = db.Column('id', db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    owner = db.Column('owner', db.Integer, db.ForeignKey('user.id'), primary_key=True, nullable=False)
     unit_number = db.Column('unit_number', db.Integer, nullable=True)
     street_number = db.Column('street_number', db.Integer, nullable=False)
     street_name = db.Column('street_name', db.String(250), nullable=False)
     suburb = db.Column('suburb', db.String(250), nullable=False)
     country = db.Column('country', db.String(250), nullable=False)
+
+
+class Rating(db.Model):
+    __tablename__ = 'rating'
+    id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
+    reviewer = db.Column('reviewer', db.Integer, db.ForeignKey('user.id'), nullable=False)  # user who left review
+    reviewee = db.Column('reviewee', db.Integer, db.ForeignKey('user.id'), nullable=False)  # user being reviewed
+    rating = db.Column('rating', db.Integer, nullable=False)  # from 1-5 inclusive
+    comment = db.Column('comment', db.String(200), nullable=True)
 
 
 if __name__ == '__main__':

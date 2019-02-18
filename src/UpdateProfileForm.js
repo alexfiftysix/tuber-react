@@ -10,6 +10,8 @@ export class UpdateProfileForm extends React.Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
+        console.log(this.state);
     }
 
     componentDidMount() {
@@ -36,9 +38,15 @@ export class UpdateProfileForm extends React.Component {
 
         let data = new FormData();
 
-        data.append('name', this.state.profile.name);
-        data.append('email', this.state.profile.email);
-        data.append('address', this.state.profile.address);
+        if (this.state.profile.name) {
+            data.append('name', this.state.profile.name);
+        }
+        if (this.state.profile.email) {
+            data.append('email', this.state.profile.email);
+        }
+        if (this.state.profile.address) {
+            data.append('address', this.state.profile.address);
+        }
         // TODO: Change database to allow address input
 
         xhr.send(data);

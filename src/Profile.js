@@ -34,7 +34,7 @@ export class Profile extends React.Component {
                 <h1>{this.state.profile.email}</h1>
                 <h1>{this.state.profile.address}</h1>
                 <h1>{this.state.profile.rating}</h1>
-                <li><Link to={"/profile/edit/" + this.state.profile.id}>Edit Profile</Link></li>
+                <li><Link to={"/profile+update/" + this.state.profile.id}>Edit Profile</Link></li>
                 <Deck rest_route={'potatoes+user=' + this.state.profile.id} />
             </div>
         );
