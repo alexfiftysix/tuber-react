@@ -5,7 +5,8 @@ export class UpdateProfileForm extends React.Component {
         super(props);
 
         this.state = {
-            profile: {}
+            profile: {},
+            address: {}
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -20,13 +21,13 @@ export class UpdateProfileForm extends React.Component {
         fetch(url)
             .then(response => response.json())
             .then(data => this.setState({profile: data.user}));
+
+        let url_2 = 'http://localhost:5000/user/' + this.props.match.params.id;
     }
 
     handleSubmit(event) {
         let xhr = new XMLHttpRequest();
         let url = 'http://localhost:5000/user/' + this.props.match.params.id;
-
-        console.log('sending to: ' + url);
 
         xhr.open('PATCH', url, true);
         xhr.onreadystatechange = function () {
@@ -35,6 +36,8 @@ export class UpdateProfileForm extends React.Component {
             // }
             alert(xhr.responseText);
         };
+
+
 
         let data = new FormData();
 

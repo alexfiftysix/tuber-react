@@ -101,9 +101,8 @@ api.add_resource(Secret, '/secret')
 
 
 class UserSignUp(Resource):
-    # TODO: Put all user stuff in here under different request types
+    # TODO: Move this to SingleUserResource
     def post(self):
-        # TODO: Use PUT instead
         # TODO: validate
         # TODO: send verification email to new user
         if not request.form['email'] or not request.form['password']:
@@ -114,8 +113,6 @@ class UserSignUp(Resource):
             email=request.form['email'],
             password=password,
             name=None,
-            address=None,
-            rating=None
         )
         db.session.add(new_user)
         db.session.commit()
@@ -137,8 +134,6 @@ class SingleUserResource(Resource):
             'id': found.id,
             'email': found.email,
             'name': found.name,
-            'address': found.address,
-            'rating': found.rating
         }
 
         return {'user': current}
@@ -153,8 +148,6 @@ class SingleUserResource(Resource):
             found.name = request.form['name']
         if request.form.get('email'):
             found.email = request.form['email']
-        if request.form.get('address'):
-            found.address = request.form['address']
 
         db.session.commit()
 
@@ -162,15 +155,13 @@ class SingleUserResource(Resource):
             'id': found.id,
             'email': found.email,
             'name': found.name,
-            'address': found.address,
-            'rating': found.rating
         }
 
         return current
 
         # TODO: actual patch logic
 
-    def put(self):
+    def post(self):
         # TODO: Add this / check this
         # TODO: validate
         # TODO: send verification email to new user
@@ -182,7 +173,6 @@ class SingleUserResource(Resource):
             email=request.form['email'],
             password=password,
             name=None,
-            address=None,
             rating=None
         )
         db.session.add(new_user)
@@ -327,13 +317,9 @@ api.add_resource(UsersPotatoesResource, '/potatoes+user=<user_id>')
 class SingleAddressResource(Resource):
     def get(self, id):
         # ID of the owner of the address
-        user = User.query.filter_by(id=id).first()
-        if not user:
-            return {'message': 'no user with that id exists'}
-
-        address = Address.query.filter_by(id=user.address).first()
+        address = Address.query.filter_by(id=id).first()
         if not address:
-            return {'message': 'That user has no address listed'}
+            return {'message': 'That address does not exist'}
 
         current = {
             'unit_number': address.unit_number,
@@ -361,6 +347,8 @@ class SingleAddressResource(Resource):
         db.session.commit()
         return new_address
 
+api.add_resource(SingleAddressResource, '/address/id')
+
 
 class LogInResource(Resource):
     def post(self):
@@ -385,14 +373,11 @@ class Potatoes(db.Model):
 
 
 class User(db.Model):
-    # TODO: Just have email as PK?
     __tablename__ = 'user'
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True, nullable=False)
     email = db.Column('email', db.String(250), unique=True, nullable=False)
     password = db.Column('password', db.String(250), unique=False, nullable=False)
     name = db.Column('name', db.String(250), nullable=True)
-    # rating = db.Column('rating', db.DECIMAL(10, 2), nullable=True)
-    # Instead of storing rating, store Reviews as DB table linked to user, and generate rating accordingly
 
 
 class Address(db.Model):

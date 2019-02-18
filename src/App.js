@@ -7,6 +7,7 @@ import {NewPotatoForm} from "./NewPotatoForm";
 import {PotatoSelector} from "./PotatoSelector";
 import {Home} from './Home'
 import {UpdateProfileForm} from "./UpdateProfileForm";
+import {UserSignUp} from "./UserSignUp";
 
 class App extends Component {
     render() {
@@ -19,7 +20,7 @@ class App extends Component {
                     <Route path="/repos" component={PotatoSelector}/>
                     <Route path="/profile/:id" component={Profile}/>
                     <Route path="/profile+update/:id" component={UpdateProfileForm}/>
-
+                    <Route path="/signup" component={UserSignUp}/>
                 </div>
             </main>
         );

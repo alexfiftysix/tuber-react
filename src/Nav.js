@@ -10,6 +10,7 @@ export class Nav extends React.Component {
                 <li><Link to="/add_potato">Add Potatoes</Link></li>
                 <li><Link to="/repos">Repos</Link></li>
                 <li><Link to="/profile/1">Profile</Link></li>
+                <li><Link to="/signup">Sign Up!</Link></li>
             </ul>
         )
     }
