@@ -51,7 +51,7 @@ export class NewPotatoForm extends React.Component {
 
     render() {
         return (
-            <form>
+            <form className={'form'}>
                 <label>
                     <p>User ID:</p>
                     <input type="number" value={this.state.id} onChange={this.handleChange} name="id"/>
@@ -74,7 +74,7 @@ export class NewPotatoForm extends React.Component {
 
                 <label>
                     <p>description:</p>
-                    <input type="text" value={this.state.description} onChange={this.handleChange} name="description"/>
+                    <input type="textarea" value={this.state.description} onChange={this.handleChange} name="description"/>
                 </label>
 
                 <button onClick={this.handleSubmit}>Submit</button>

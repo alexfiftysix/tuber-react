@@ -5,10 +5,6 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {BrowserRouter, Route} from "react-router-dom";
-import {NewPotatoForm} from './NewPotatoForm';
-import {PotatoSelector} from './PotatoSelector';
-import {Home} from './Home'
-import {Profile} from './Profile';
 
 ReactDOM.render((
     <BrowserRouter>

@@ -6,6 +6,8 @@ export class Profile extends React.Component {
     // props:
     //   profile_id: int: profile number of current user
 
+    // TODO: Sending endless requests
+
     constructor(props) {
         super(props);
 
@@ -16,6 +18,7 @@ export class Profile extends React.Component {
     }
 
     componentDidMount() {
+        console.log("hey");
         let url = 'http://localhost:5000/user/' + this.props.match.params.id;
 
         fetch(url)
@@ -28,7 +31,6 @@ export class Profile extends React.Component {
     render() {
         return (
             <div>
-                <h1>{this.state.profile.id}</h1>
                 <h1>{this.state.profile.name}</h1>
                 <h1>{this.state.profile.email}</h1>
                 <h1>{this.state.profile.address}</h1>

@@ -125,7 +125,8 @@ class UserSignUp(Resource):
 api.add_resource(UserSignUp, '/sign_up')
 
 
-class GetUser(Resource):
+class SingleUserResource(Resource):
+    # TODO: PATCH user.
     def get(self, id):
         found = User.query.filter_by(id=id).first()
 
@@ -142,8 +143,54 @@ class GetUser(Resource):
 
         return {'user': current}
 
+    def patch(self, id):
+        found = User.query.filter_by(id=id).first()
 
-api.add_resource(GetUser, '/user/<id>')
+        if not found:
+            return {'message': 'user not found'}
+
+        if request.form.get('name'):
+            found.name = request.form['name']
+        if request.form.get('email'):
+            found.email = request.form['email']
+        if request.form.get('address'):
+            found.address = request.form['address']
+
+        db.session.commit()
+
+        current = {
+            'id': found.id,
+            'email': found.email,
+            'name': found.name,
+            'address': found.address,
+            'rating': found.rating
+        }
+
+        return current
+
+        # TODO: actual patch logic
+
+    def put(self):
+        # TODO: Add this / check this
+        # TODO: validate
+        # TODO: send verification email to new user
+        if not request.form['email'] or not request.form['password']:
+            return {'message': 'Please provide email address and password'}
+
+        password = sha256_crypt.encrypt(request.form['password'])
+        new_user = User(
+            email=request.form['email'],
+            password=password,
+            name=None,
+            address=None,
+            rating=None
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        return {'response': 'user added'}
+
+
+api.add_resource(SingleUserResource, '/user/<id>')
 
 
 class GetUsers(Resource):

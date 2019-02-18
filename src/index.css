@@ -36,11 +36,15 @@ code {
 
 .content {
     padding: 1rem;
-    border: 1px solid rgba(0,0,0,0.2);
+    margin-top: 1rem;
+    border: 1px solid rgba(0,0,0,0.1);
+    -webkit-box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.2);
+    -moz-box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.2);
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.2);
     max-width: 800px;
 }
 
-form{
+.form{
     display: flex;
     align-items: flex-end;
 }
@@ -51,6 +55,26 @@ form > label {
     width: 100%;
     border-bottom: 1px solid rgba(204, 235, 235, 0.5);
     margin-bottom: 2rem;
+}
+
+form > label > p {
+    margin-right: 2rem;
+}
+
+form > label > input {
+    border: none;
+    border-bottom: 2px solid rgba(0, 255, 0, 0.5);
+    width: 40%;
+
+    -webkit-transition: border-bottom 0.1s;
+    -moz-transition: border-bottom 0.1s;
+    -ms-transition: border-bottom 0.1s;
+    -o-transition: border-bottom 0.1s;
+    transition: border-bottom 0.1s;
+}
+
+form > label > input:focus {
+    border-bottom: 4px solid rgba(0, 255, 0, 0.7);
 }
 
 form > button {
@@ -64,16 +88,14 @@ form > button {
     -moz-box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.2);
     box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.2);
 
-    -webkit-transition: box-shadow 0.2s;
-    -moz-transition: box-shadow 0.2s;
-    -ms-transition: box-shadow 0.2s;
-    -o-transition: box-shadow 0.2s;
-    transition: box-shadow 0.2s;
+    transition-property: box-shadow, background;
+    transition-duration: 50ms;
 }
 
 form > button:hover {
-    -webkit-box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
-    -moz-box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
-    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
-}
+    -webkit-box-shadow: 1px 1px 0 0 rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 1px 1px 0 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 1px 1px 0 0 rgba(0, 0, 0, 0.4);
 
+    background: #70fa6d;
+}
