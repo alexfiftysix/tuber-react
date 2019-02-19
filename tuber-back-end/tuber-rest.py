@@ -110,6 +110,66 @@ class UserSignUp(Resource):
 api.add_resource(UserSignUp, '/sign_up')
 
 
+class FullUserResource(Resource):
+    def get(self, id):
+        """
+        Get all information about a user, including address and all potatoes
+        Password hash is not supplied for added security
+        :param id: id of user to get info on
+        :return:
+        """
+
+
+        found_user = User.query.filter_by(id=id).first()
+
+        if not found_user:
+            return {'message': 'user not found'}
+
+
+        found_address = Address.query.filter_by(owner=found_user.id).first()
+        address = {}
+        if found_address:
+            address = {
+                'unit_number': found_address.unit_number,
+                'street_number': found_address.street_number,
+                'street_name': found_address.street_name,
+                'suburb': found_address.suburb,
+                'country': found_address.country
+                # TODO: Need state
+            }
+
+        potatoes = []
+        found_potatoes = Potatoes.query.filter_by(owner=found_user.id)
+        for potato in found_potatoes:
+            new = {
+                'type': potato.type,
+                'amount': float(potato.amount),
+                'price_per_kilo': float(potato.price_per_kilo),
+                'description': potato.description,
+                'photo_path': potato.photo_path
+            }
+            potatoes.append(new)
+
+        user = {
+            'id': found_user.id,
+            'email': found_user.email,
+            'name': found_user.name,
+            'address': address,
+            'potatoes': potatoes
+        }
+
+        print(user)
+
+        return user
+
+
+
+
+
+
+api.add_resource(FullUserResource, '/full_user/<id>')
+
+
 class SingleUserResource(Resource):
     # decorators = [auth.login_required]
 
