@@ -1,13 +1,16 @@
-from flask import Flask, jsonify, make_response, request
-from flask_restful import Api, Resource
-from flask_sqlalchemy import SQLAlchemy
-from flask_httpauth import HTTPBasicAuth
-from passlib.hash import sha256_crypt
-from flask_cors import CORS, cross_origin
 # noinspection PyUnresolvedReferences
 from config import config
+from flask import Flask, jsonify, make_response, request, abort, g
+from flask_cors import CORS
+from flask_httpauth import HTTPBasicAuth
+from flask_restful import Api, Resource
+from flask_sqlalchemy import SQLAlchemy
+from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
+from passlib.hash import sha256_crypt
+from passlib.apps import custom_app_context as pwd_context
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'Really big secret'
 
 CORS(app)  # Allows all others to access this API
 
@@ -27,24 +30,6 @@ db = SQLAlchemy(app)
 
 auth = HTTPBasicAuth()
 
-users = {
-    "john": "hello",
-    "susan": "bye"
-}
-
-
-@auth.get_password
-def get_pw(username):
-    if username in users:
-        return users.get(username)
-    return None
-
-
-@app.route('/')
-@auth.login_required
-def index():
-    return "Hello, %s!" % auth.username()
-
 
 class Ping(Resource):
     def get(self):
@@ -54,9 +39,6 @@ class Ping(Resource):
         return {'request': 'post'}
 
     def put(self):
-        print("Put Request Ping received")
-        print(request.get_data())
-        print(request.form['message'])
         return {'request': 'put'}
 
     def delete(self):
@@ -92,7 +74,8 @@ api.add_resource(Build, '/build')
 
 
 class Secret(Resource):
-    @auth.login_required
+    decorators = [auth.login_required]
+
     def get(self):
         return {'secret': 'Not telling'}
 
@@ -101,28 +84,35 @@ api.add_resource(Secret, '/secret')
 
 
 class UserSignUp(Resource):
-    # TODO: Move this to SingleUserResource
     def post(self):
-        # TODO: validate
+        # Add a new user
+        # TODO: Add this / check this
+        # TODO: validate email/password strength
         # TODO: send verification email to new user
-        if not request.form['email'] or not request.form['password']:
-            return {'message': 'Please provide email address and password'}
 
-        password = sha256_crypt.encrypt(request.form['password'])
-        new_user = User(
-            email=request.form['email'],
-            password=password,
-            name=None,
-        )
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        if not email or not password:
+            abort(400)  # missing arguments
+
+        if User.query.filter_by(email=email).first() is not None:
+            abort(400)  # existing user
+
+        new_user = User(email=email)
+        new_user.hash_password(password)
         db.session.add(new_user)
         db.session.commit()
-        return {'response': 'user added'}
+
+        return {'response': 'user {} added'.format(email)}
 
 
 api.add_resource(UserSignUp, '/sign_up')
 
 
 class SingleUserResource(Resource):
+    # decorators = [auth.login_required]
+
     # TODO: PATCH user.
     def get(self, id):
         found = User.query.filter_by(id=id).first()
@@ -158,24 +148,6 @@ class SingleUserResource(Resource):
         }
 
         return current
-
-    def post(self):
-        # TODO: Add this / check this
-        # TODO: validate
-        # TODO: send verification email to new user
-        if not request.form['email'] or not request.form['password']:
-            return {'message': 'Please provide email address and password'}
-
-        password = sha256_crypt.encrypt(request.form['password'])
-        new_user = User(
-            email=request.form['email'],
-            password=password,
-            name=None,
-            rating=None
-        )
-        db.session.add(new_user)
-        db.session.commit()
-        return {'response': 'user added'}
 
 
 api.add_resource(SingleUserResource, '/user/<id>')
@@ -335,10 +307,44 @@ api.add_resource(SingleAddressResource, '/address/id')
 
 class LogInResource(Resource):
     def post(self):
-        print(request.form['password'])
+        print("Ya tried to log in")
+
+        email = request.form['email']
+        password = request.form['password']
+
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return {'message': 'user does not exist'}
+        if not user.verify_password(password):
+            return {'message': 'wrong password'}
+
+        return  {'message': 'success'}
 
 
 api.add_resource(LogInResource, '/log_in')
+
+
+@auth.verify_password
+def verify_password(email_or_token, password):
+    # first try to authenticate by token
+    user = User.verify_auth_token(email_or_token)
+    if not user:
+        # try to authenticate with username/password
+        user = User.query.filter_by(email=email_or_token).first()
+        if not user or not user.verify_password(password):
+            return False
+    g.user = user
+    return True
+
+
+class TokenGenerator(Resource):
+    decorators = [auth.login_required]
+
+    def get(self):
+        token = g.user.generate_auth_token()
+        return {'token': token.decode('ascii')}
+
+api.add_resource(TokenGenerator, '/get_token')
 
 
 # ------ #
@@ -361,6 +367,33 @@ class User(db.Model):
     email = db.Column('email', db.String(250), unique=True, nullable=False)
     password = db.Column('password', db.String(250), unique=False, nullable=False)
     name = db.Column('name', db.String(250), nullable=True)
+
+    def hash_password(self, password):
+        self.password = pwd_context.encrypt(password)
+
+    def verify_password(self, password_candidate):
+        return pwd_context.verify(password_candidate, self.password)
+
+    def generate_auth_token(self, expiration=600):
+        """
+        Generate an authentication token.
+        Expiration is in seconds
+        from: https://blog.miguelgrinberg.com/post/restful-authentication-with-flask
+        """
+        s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'id': self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except SignatureExpired:
+            return None  # valid token, but expired
+        except BadSignature:
+            return None  # invalid token
+        user = User.query.get(data['id'])
+        return user
 
 
 class Address(db.Model):

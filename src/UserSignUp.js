@@ -44,16 +44,16 @@ export class UserSignUp extends React.Component {
 
     render() {
         return (
-            <form>
+            <form className={'form'} method="POST" action="http://localhost:5000/sign_up">
                 <label>
-                    Email:
+                    <p>Email:</p>
                     <input type="text" value={this.state.email} onChange={this.handleChange} name="email"/>
                 </label>
                 <label>
-                    password:
+                    <p>Password:</p>
                     <input type="password" value={this.state.password} onChange={this.handleChange} name="password"/>
                 </label>
-                <input type="submit" value="Submit" onClick={this.handleSubmit}/>
+                <input className={'form-submit'} type="submit" value="Submit" onClick={this.handleSubmit}/>
             </form>
         );
     }

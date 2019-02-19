@@ -1,5 +1,7 @@
 import React from 'react'
 
+// TODO: Make generic form class for other forms to inherit/extend
+// TODO: Handle address properly - have a field for each part of address
 export class UpdateProfileForm extends React.Component {
     constructor(props) {
         super(props);
@@ -21,8 +23,6 @@ export class UpdateProfileForm extends React.Component {
         fetch(url)
             .then(response => response.json())
             .then(data => this.setState({profile: data.user}));
-
-        let url_2 = 'http://localhost:5000/user/' + this.props.match.params.id;
     }
 
     handleSubmit(event) {

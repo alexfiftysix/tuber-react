@@ -18,12 +18,3 @@ export class Card extends React.Component {
         );
     }
 }
-
-Card.defaultProps = {
-    title: 'Title',
-    image: "../static/many-potatoes.jpeg",
-    price: 'price',
-    amount: '___',
-    description: 'Description goes here.',
-    location: 'location'
-};
