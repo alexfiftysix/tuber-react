@@ -1,22 +1,19 @@
 import React from 'react'
 
 // TODO: Make generic form class for other forms to inherit/extend
-// TODO: Handle address properly - have a field for each part of address
+// TODO: Should probably split this in two - update personal details / update address
 export class UpdateProfileForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            profile: {
-                email: '',
-                name: '',
-                unit_number: '',
-                street_number: '',
-                street_name: '',
-                suburb: '',
-                country: ''
-            },
-            obj: null
+            email: '',
+            name: '',
+            unit_number: '',
+            street_number: '',
+            street_name: '',
+            suburb: '',
+            country: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -24,29 +21,10 @@ export class UpdateProfileForm extends React.Component {
     }
 
     componentDidMount() {
-        // Get name and email
-        let url = 'http://localhost:5000/user/' + this.props.match.params.id;
-        let request1 = fetch(url, {
-            credentials: 'same-origin'
-        }).then(response => response.json());
-
-        // Get address info
-        url = 'http://localhost:5000/address/' + this.props.match.params.id;
-        let request2 = fetch(url, {
-            credentials: 'same-origin'
-        }).then(response => response.json());
-
-
-        let combinedData = {'profile': {}, 'address': {}};
-        Promise.all([request1, request2]).then(values => {
-            // TODO: Less BadCode here
-            combinedData["profile"] = values[0];
-            for (var i in values[1]) {
-                combinedData["profile"][i] = values[1][i];
-            }
-            this.setState(combinedData);
-        });
-
+        let url = 'http://localhost:5000/user_and_address/' + this.props.match.params.id;
+        fetch(url, {credentials: 'same-origin'})
+            .then(response => response.json())
+            .then(data => this.setState(data));
     }
 
 
@@ -64,11 +42,11 @@ export class UpdateProfileForm extends React.Component {
 
         let data = new FormData();
 
-        if (this.state.profile.name) {
-            data.append('name', this.state.profile.name);
+        if (this.state.name) {
+            data.append('name', this.state.name);
         }
-        if (this.state.profile.email) {
-            data.append('email', this.state.profile.email);
+        if (this.state.email) {
+            data.append('email', this.state.email);
         }
         // TODO: Change database to allow address input
 
@@ -89,20 +67,20 @@ export class UpdateProfileForm extends React.Component {
 
         let data = new FormData();
 
-        if (this.state.profile.unit_number) {
-            data.append('unit_number', this.state.profile.unit_number);
+        if (this.state.unit_number) {
+            data.append('unit_number', this.state.unit_number);
         }
-        if (this.state.profile.street_number) {
-            data.append('street_number', this.state.profile.street_number);
+        if (this.state.street_number) {
+            data.append('street_number', this.state.street_number);
         }
-        if (this.state.profile.street_name) {
-            data.append('street_name', this.state.profile.street_name);
+        if (this.state.street_name) {
+            data.append('street_name', this.state.street_name);
         }
-        if (this.state.profile.suburb) {
-            data.append('suburb', this.state.profile.suburb);
+        if (this.state.suburb) {
+            data.append('suburb', this.state.suburb);
         }
-        if (this.state.profile.country) {
-            data.append('country', this.state.profile.country);
+        if (this.state.country) {
+            data.append('country', this.state.country);
         }
 
         xhr.send(data);
@@ -120,13 +98,7 @@ export class UpdateProfileForm extends React.Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        let new_profile = this.state.profile;
-        new_profile[name] = value;
-
-
-        this.setState({
-            profile: new_profile
-        });
+        this.setState({[name]: value})
     }
 
     render() {
@@ -134,37 +106,37 @@ export class UpdateProfileForm extends React.Component {
             <form className={'form'}>
                 <label>
                     <p>Name: </p>
-                    <input type={'text'} value={this.state.profile.name} onChange={this.handleChange} name={'name'}/>
+                    <input type={'text'} value={this.state.name} onChange={this.handleChange} name={'name'}/>
                 </label>
                 <label>
                     <p>Email: </p>
-                    <input type={'text'} value={this.state.profile.email} onChange={this.handleChange} name={'email'}/>
+                    <input type={'text'} value={this.state.email} onChange={this.handleChange} name={'email'}/>
                 </label>
                 <p>Address</p>
 
                 <label>
                     <p>Unit Number: </p>
-                    <input type={'text'} value={this.state.profile.unit_number} onChange={this.handleChange}
+                    <input type={'text'} value={this.state.unit_number} onChange={this.handleChange}
                            name={'unit_number'}/>
                 </label>
                 <label>
                     <p>Street Number: </p>
-                    <input type={'text'} value={this.state.profile.street_number} onChange={this.handleChange}
+                    <input type={'text'} value={this.state.street_number} onChange={this.handleChange}
                            name={'street_number'}/>
                 </label>
                 <label>
                     <p>Street Name: </p>
-                    <input type={'text'} value={this.state.profile.street_name} onChange={this.handleChange}
+                    <input type={'text'} value={this.state.street_name} onChange={this.handleChange}
                            name={'street_name'}/>
                 </label>
                 <label>
                     <p>Suburb: </p>
-                    <input type={'text'} value={this.state.profile.suburb} onChange={this.handleChange}
+                    <input type={'text'} value={this.state.suburb} onChange={this.handleChange}
                            name={'suburb'}/>
                 </label>
                 <label>
                     <p>Country: </p>
-                    <input type={'text'} value={this.state.profile.country} onChange={this.handleChange}
+                    <input type={'text'} value={this.state.country} onChange={this.handleChange}
                            name={'country'}/>
                 </label>
 

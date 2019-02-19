@@ -158,17 +158,41 @@ class FullUserResource(Resource):
             'potatoes': potatoes
         }
 
-        print(user)
+        return user
+
+api.add_resource(FullUserResource, '/full_user/<id>')
+
+class UserAndAddressResource(Resource):
+    def get(self, id):
+
+
+        found_user = User.query.filter_by(id=id).first()
+        if not found_user:
+            return {'message': 'user not found'}
+
+        user = {
+            'name': found_user.name,
+            'email': found_user.email
+        }
+
+        found_address = Address.query.filter_by(owner=found_user.id).first()
+        if found_address:
+            user['unit_number'] = found_address.unit_number
+            user['street_number'] = found_address.street_number
+            user['street_name'] = found_address.street_name
+            user['suburb'] = found_address.suburb
+            user['country'] = found_address.country
+        else:
+            user['unit_number'] = None
+            user['street_number'] = None
+            user['street_name'] = None
+            user['suburb'] = None
+            user['country'] = None
 
         return user
 
 
-
-
-
-
-api.add_resource(FullUserResource, '/full_user/<id>')
-
+api.add_resource(UserAndAddressResource, '/user_and_address/<id>')
 
 class SingleUserResource(Resource):
     # decorators = [auth.login_required]
