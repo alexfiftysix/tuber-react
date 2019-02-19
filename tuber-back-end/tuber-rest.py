@@ -126,7 +126,7 @@ class SingleUserResource(Resource):
             'name': found.name,
         }
 
-        return {'user': current}
+        return current
 
     def patch(self, id):
         found = User.query.filter_by(id=id).first()
@@ -269,9 +269,9 @@ api.add_resource(UsersPotatoesResource, '/potatoes+user=<user_id>')
 
 
 class SingleAddressResource(Resource):
-    def get(self, id):
+    def get(self, owner_id):
         # ID of the owner of the address
-        address = Address.query.filter_by(id=id).first()
+        address = Address.query.filter_by(owner=owner_id).first()
         if not address:
             return {'message': 'That address does not exist'}
 
@@ -285,24 +285,46 @@ class SingleAddressResource(Resource):
 
         return current
 
-    def post(self):
+    def patch(self, owner_id):
         # POST is for creating new resources
         # TODO: validation
-        new_address = {
-            'owner': request.form.get('owner'),
-            'unit_number': request.form.get('unit_number'),
-            'street_number': request.form.get('street_number'),
-            'street_name': request.form.get('street_name'),
-            'suburb': request.form.get('suburb'),
-            'country': request.form.get('country')
-        }
+
+        found_address = Address.query.filter_by(owner=owner_id).first()
+        if found_address:
+            # We patching
+            if request.form.get('unit_number'):
+                found_address.unit_number = request.form.get('unit_number')
+            if request.form.get('street_number'):
+                found_address.street_number = request.form.get('street_number')
+            if request.form.get('street_name'):
+                found_address.street_name = request.form.get('street_name')
+            if request.form.get('suburb'):
+                found_address.suburb = request.form.get('suburb')
+            if request.form.get('country'):
+                found_address.country = request.form.get('country')
+
+            db.session.commit()
+            return {'message': 'address updated'}
+
+        # Create new address
+
+        new_address = Address(
+            owner=owner_id,
+            unit_number=request.form.get('unit_number'),
+            street_number=request.form.get('street_number'),
+            street_name=request.form.get('street_name'),
+            suburb=request.form.get('suburb'),
+            country=request.form.get('country')
+        )
 
         db.session.add(new_address)
         db.session.commit()
-        return new_address
+        return {
+            'message': 'new address added for user {}'.format(owner_id)
+        }
 
 
-api.add_resource(SingleAddressResource, '/address/id')
+api.add_resource(SingleAddressResource, '/address/<owner_id>')
 
 
 class LogInResource(Resource):
@@ -318,7 +340,7 @@ class LogInResource(Resource):
         if not user.verify_password(password):
             return {'message': 'wrong password'}
 
-        return  {'message': 'success'}
+        return {'message': 'success'}
 
 
 api.add_resource(LogInResource, '/log_in')
@@ -343,6 +365,7 @@ class TokenGenerator(Resource):
     def get(self):
         token = g.user.generate_auth_token()
         return {'token': token.decode('ascii')}
+
 
 api.add_resource(TokenGenerator, '/get_token')
 

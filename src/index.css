@@ -54,11 +54,13 @@ form > label {
     justify-content: space-between;
     width: 100%;
     border-bottom: 1px solid rgba(204, 235, 235, 0.5);
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
+
 
 form > label > p {
     margin-right: 2rem;
+    margin-bottom: 0;
 }
 
 form > label > input {

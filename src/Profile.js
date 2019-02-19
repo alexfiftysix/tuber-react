@@ -22,11 +22,10 @@ export class Profile extends React.Component {
 
         fetch(url)
             .then(response => response.json())
-            .then(data => this.setState({profile: data.user}));
+            .then(data => this.setState({profile: data}));
     }
 
     render() {
-        console.log('ID: ' + this.state.profile.id);
         return (
             <div>
                 <h1>{this.state.profile.name}</h1>
