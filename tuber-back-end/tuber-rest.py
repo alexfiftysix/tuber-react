@@ -3,7 +3,7 @@ from config import config
 from flask import Flask, jsonify, make_response, request, abort, g
 from flask_cors import CORS
 from flask_httpauth import HTTPBasicAuth
-from flask_restful import Api, Resource
+from flask_restful import Api, Resource, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
 from passlib.hash import sha256_crypt
@@ -192,6 +192,23 @@ class UserAndAddressResource(Resource):
 
 
 api.add_resource(UserAndAddressResource, '/user_and_address/<id>')
+
+
+class ImageTestResource(Resource):
+    def post(self):
+        if 'image' in request.files:
+            filename = images.save(request.files['image'])
+
+        return {'message': 'not implemented'}
+
+api.add_resource(ImageTestResource, '/image_test')
+
+
+class ImageTest(db.Model):
+    __tablename__ = 'image'
+    id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
+    path = db.Column('path', db.String(500))
+
 
 
 class SingleUserResource(Resource):
@@ -495,6 +512,10 @@ class Potatoes(db.Model):
     price_per_kilo = db.Column('price', db.DECIMAL(10, 2), nullable=False)
     description = db.Column('description', db.String(200), nullable=False)
     photo_path = db.Column('photo_path', db.String(300), nullable=True)
+
+    def import_image(self, request):
+        if 'image' in request.files:
+            self.image_filename = save(request.files['image'])
 
 
 class User(db.Model):

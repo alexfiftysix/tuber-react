@@ -10,12 +10,11 @@ export class Deck extends React.Component {
         this.state = {
             cards: []
         };
-
-        this.get_data = this.get_data.bind(this);
     }
 
-    get_data() {
-        const url = 'http://localhost:5000/' + this.props.rest_route;
+    componentDidMount() {
+        const url = 'http://localhost:5000/potatoes+user=' + this.props.id;
+        console.log(this.props.id);
 
         // Fetches data from rest API, updates cards
         fetch(url)
@@ -23,14 +22,9 @@ export class Deck extends React.Component {
             .then(data => this.setState({cards: data}));
     }
 
-
-    componentDidMount() {
-        this.get_data();
-    }
-
-    componentDidUpdate() {
-        this.get_data();
-    }
+    // componentDidUpdate() {
+    //     this.get_data();
+    // }
 
     render_cards() {
         return this.state.cards.map((card) => {

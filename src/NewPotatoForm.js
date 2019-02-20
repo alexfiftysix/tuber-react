@@ -54,29 +54,31 @@ export class NewPotatoForm extends React.Component {
     render() {
         return (
             <form className={'form'}>
-                {/*<label>*/}
-                    {/*<p>User ID:</p>*/}
-                    {/*<input type="number" value={this.state.id} onChange={this.handleChange} name="id"/>*/}
-                {/*</label>*/}
+                <h5>Add your new potatoes</h5>
 
                 <label>
-                    <p>type:</p>
+                    <p>Type:</p>
                     <input type="text" value={this.state.type} onChange={this.handleChange} name="type"/>
                 </label>
 
                 <label>
-                    <p>amount (kg):</p>
+                    <p>Amount (kg):</p>
                     <input type="number" step="0.01" value={this.state.amount} onChange={this.handleChange} name="amount"/>
                 </label>
 
                 <label>
-                    <p>price per kg:</p>
+                    <p>Price per kg:</p>
                     <input type="number" step="0.01" value={this.state.price} onChange={this.handleChange} name="price"/>
                 </label>
 
                 <label>
-                    <p>description:</p>
+                    <p>Description:</p>
                     <input type="textarea" value={this.state.description} onChange={this.handleChange} name="description"/>
+                </label>
+
+                <label>
+                    <p>Image:</p>
+                    <input type="file" value={this.state.description} onChange={this.handleChange} name="image" accept={'image/*'}/>
                 </label>
 
                 <button onClick={this.handleSubmit}>Submit</button>
