@@ -119,12 +119,10 @@ class FullUserResource(Resource):
         :return:
         """
 
-
         found_user = User.query.filter_by(id=id).first()
 
         if not found_user:
             return {'message': 'user not found'}
-
 
         found_address = Address.query.filter_by(owner=found_user.id).first()
         address = {}
@@ -160,11 +158,12 @@ class FullUserResource(Resource):
 
         return user
 
+
 api.add_resource(FullUserResource, '/full_user/<id>')
+
 
 class UserAndAddressResource(Resource):
     def get(self, id):
-
 
         found_user = User.query.filter_by(id=id).first()
         if not found_user:
@@ -193,6 +192,7 @@ class UserAndAddressResource(Resource):
 
 
 api.add_resource(UserAndAddressResource, '/user_and_address/<id>')
+
 
 class SingleUserResource(Resource):
     # decorators = [auth.login_required]
@@ -295,12 +295,41 @@ class PotatoResource(Resource):
             data.append(current)
 
         response = make_response(jsonify(data))
-        response.headers['Access-Control-Allow-Origin'] = '*'  # TODO: put backend on diff server?
+        # response.headers['Access-Control-Allow-Origin'] = '*'  # TODO: put backend on diff server?
 
         return response
 
 
 api.add_resource(PotatoResource, '/potatoes')
+
+
+class FilterPotatoesResource(Resource):
+    def get(self, price_low, price_high):
+        # Get all potatoes
+        potatoes = Potatoes.query.filter(Potatoes.price_per_kilo >= price_low, Potatoes.price_per_kilo <= price_high)
+
+        data = []
+
+        for pot in potatoes:
+            current = {
+                'title': pot.type,
+                'image': pot.photo_path,
+                'price': float(pot.price_per_kilo),
+                'amount': float(pot.amount),
+                'description': pot.description,
+                'location': 'No location',
+                'owner': pot.owner,
+                'id': pot.id
+            }
+            data.append(current)
+
+        response = make_response(jsonify(data))
+        # response.headers['Access-Control-Allow-Origin'] = '*'  # TODO: put backend on diff server?
+
+        return response
+
+
+api.add_resource(FilterPotatoesResource, '/potatoes/low=<price_low>+high=<price_high>')
 
 
 class SinglePotatoResource(Resource):

@@ -25,6 +25,7 @@ class App extends Component {
                     <Route path="/profile+update/:id" component={UpdateProfileForm}/>
                     <Route path="/signup" component={UserSignUp}/>
                     <Route path="/login" component={LogIn}/>
+                    {/*<Route path="/search/low=:priceLow?/high=:priceHigh?" component={SearchPotatoes}/>*/}
                     <Route path="/search" component={SearchPotatoes}/>
                 </div>
             </main>
