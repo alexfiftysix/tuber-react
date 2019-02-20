@@ -9,6 +9,7 @@ export class Nav extends React.Component {
                 <li><Link to={"/home"}>Home</Link></li>
                 <li><Link to="/repos">Profiles</Link></li>
                 <li><Link to="/profile/1">Profile</Link></li>
+                <li><Link to="/search">Search</Link></li>
                 <li><Link to="/login">Log In</Link></li>
                 <li><Link to="/signup">Sign Up!</Link></li>
             </ul>
