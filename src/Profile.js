@@ -1,5 +1,4 @@
 import React from 'react'
-import {Deck} from './Deck';
 import {Link} from "react-router-dom";
 import {Card} from "./Card";
 
@@ -31,11 +30,12 @@ export class Profile extends React.Component {
             const potato = this.state['potatoes'][i];
 
             // TODO: update Deck component to do basically this
+            console.log(potato['image']);
             const next = (
                 <Card
                     key={'potato_' + potato['id']}
                     title={potato['title']}
-                    image={potato['image']}
+                    image={potato['photo_path']}
                     price={potato['price_per_kilo']} // WHy is this different to in SearchPotatoes?
                     amount={potato['amount']}
                     description={potato['description']}

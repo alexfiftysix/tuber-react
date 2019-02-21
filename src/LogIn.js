@@ -7,8 +7,10 @@ export class LogIn extends React.Component {
 
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            token: ''
         };
+
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -17,30 +19,17 @@ export class LogIn extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        const xhr = new XMLHttpRequest();
-        const url = 'http://localhost:5000/log_in';
-
-        console.log('email: ' + this.state.email);
-        console.log('password: ' + this.state.password);
-
-        xhr.open('POST', url, true);
-        xhr.onreadystatechange = function () {
-            // if (xhr.readyState === 4 && xhr.status === 200) {
-            //     alert(xhr.responseText);
-            // }
-            alert(xhr.responseText);
-        };
-
-
-        let data = new FormData();
-        if (this.state.email) {
-            data.append('email', this.state.email);
-        }
-        if (this.state.password) {
-            data.append('password', this.state.password);
+        if (!this.state.email || !this.state.password) {
+            alert('Please include email and password!');
+            return;
         }
 
-        xhr.send(data);
+        let url = 'http://' + this.state.email + ':' + this.state.password + '@localhost:5000/get_token/';
+        console.log(url);
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => this.setState(data));
     }
 
     handleChange(event) {

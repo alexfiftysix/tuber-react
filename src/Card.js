@@ -1,11 +1,23 @@
 import React from 'react';
 
 export class Card extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            image: ''
+        }
+    }
+
+
+
+
     render() {
+        const image = this.props.image ? 'http://localhost:5000/image/' + this.props.image : 'http://localhost:5000/image/No_image.jpeg';
 
         return (
             <div className="card">
-                <img src="https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.twochums.com%2Fwp-content%2Fuploads%2F2013%2F03%2Fpotatoes.jpg&f=1" className="card-img-top" alt={this.props.image}/>
+                <img src={image} alt={this.props.title}/>
                 <div className="card-body">
                     <h5 className="card-title">{this.props.title}</h5>
                     <p className="card-text">${this.props.price}/kg</p>

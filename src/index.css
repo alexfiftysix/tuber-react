@@ -137,3 +137,9 @@ main {
 .search-potatoes > form {
     margin: 2rem;
 }
+
+.card > img {
+    max-width: 100%;
+    max-height: 10rem;
+    object-fit: cover;
+}

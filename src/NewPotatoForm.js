@@ -12,8 +12,11 @@ export class NewPotatoForm extends React.Component {
             type: '',
             amount: '',
             price: '',
-            description: ''
+            description: '',
+            file: null
         };
+
+        this.fileInput = React.createRef();
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -35,6 +38,7 @@ export class NewPotatoForm extends React.Component {
         data.append('amount', this.state.amount);
         data.append('price', this.state.price);
         data.append('description', this.state.description);
+        data.append('file', this.fileInput.current.files[0]);
 
         xhr.send(data);
 
@@ -53,7 +57,7 @@ export class NewPotatoForm extends React.Component {
 
     render() {
         return (
-            <form className={'form'}>
+            <form className={'form'} encType={'multipart/form-data'}>
                 <h5>Add your new potatoes</h5>
 
                 <label>
@@ -73,12 +77,12 @@ export class NewPotatoForm extends React.Component {
 
                 <label>
                     <p>Description:</p>
-                    <input type="textarea" value={this.state.description} onChange={this.handleChange} name="description"/>
+                    <input type="text" value={this.state.description} onChange={this.handleChange} name="description"/>
                 </label>
 
                 <label>
                     <p>Image:</p>
-                    <input type="file" value={this.state.description} onChange={this.handleChange} name="image" accept={'image/*'}/>
+                    <input type="file" name="file" accept={'image/*'} ref={this.fileInput}/>
                 </label>
 
                 <button onClick={this.handleSubmit}>Submit</button>

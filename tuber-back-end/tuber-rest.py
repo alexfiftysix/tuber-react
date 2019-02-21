@@ -1,6 +1,7 @@
 # noinspection PyUnresolvedReferences
 from config import config
-from flask import Flask, jsonify, make_response, request, abort, g
+import os
+from flask import Flask, jsonify, make_response, request, abort, g, send_from_directory
 from flask_cors import CORS
 from flask_httpauth import HTTPBasicAuth
 from flask_restful import Api, Resource, reqparse
@@ -8,9 +9,13 @@ from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
 from passlib.hash import sha256_crypt
 from passlib.apps import custom_app_context as pwd_context
+from werkzeug.utils import secure_filename
+
+ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'gif', 'png']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Really big secret'
+app.config['UPLOAD_FOLDER'] = 'uploads'
 
 CORS(app)  # Allows all others to access this API
 
@@ -194,12 +199,23 @@ class UserAndAddressResource(Resource):
 api.add_resource(UserAndAddressResource, '/user_and_address/<id>')
 
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 class ImageTestResource(Resource):
     def post(self):
-        if 'image' in request.files:
-            filename = images.save(request.files['image'])
+        if 'file' not in request.files:
+            return {'message': 'No file part'}
+        file = request.files['file']
+        if file.filename == '':
+            return {'message': 'No selected file'}
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return {'message': 'file uploaded'}
 
-        return {'message': 'not implemented'}
 
 api.add_resource(ImageTestResource, '/image_test')
 
@@ -209,6 +225,13 @@ class ImageTest(db.Model):
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
     path = db.Column('path', db.String(500))
 
+
+class GetImage(Resource):
+    def get(self, filename):
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+api.add_resource(GetImage, '/image/<filename>')
 
 
 class SingleUserResource(Resource):
@@ -287,6 +310,15 @@ class PotatoResource(Resource):
             description=request.form['description'],
             photo_path=None
         )
+
+        if 'file' in request.files:
+            file = request.files['file']
+            if file.filename != '' and file and allowed_file(file.filename):
+                filename = request.form['id'] + '_' + secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                new_potato.photo_path = filename
+        else:
+            print("NO FILE")
 
         db.session.add(new_potato)
         db.session.commit()
