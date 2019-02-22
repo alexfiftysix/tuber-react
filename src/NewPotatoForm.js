@@ -1,6 +1,5 @@
 import React from 'react'
 
-// TODO: link to this from specific profile
 // Form for adding a new potato to a user
 export class NewPotatoForm extends React.Component {
 

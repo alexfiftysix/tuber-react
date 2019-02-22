@@ -9,7 +9,6 @@ import {UpdateProfileForm} from "./UpdateProfileForm";
 import {UserSignUp} from "./UserSignUp";
 import {LogIn} from "./LogIn";
 import {SearchPotatoes} from "./SearchPotatoes";
-import {FileUploadTest} from "./FileUploadTest";
 
 class App extends Component {
     render() {
@@ -24,7 +23,6 @@ class App extends Component {
                     <Route path="/signup" component={UserSignUp}/>
                     <Route path="/login" component={LogIn}/>
                     <Route path="/search" component={SearchPotatoes}/>
-                    <Route path="/upload_test" component={FileUploadTest}/>
                 </div>
             </main>
         );

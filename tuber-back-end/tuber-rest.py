@@ -91,7 +91,6 @@ api.add_resource(Secret, '/secret')
 class UserSignUp(Resource):
     def post(self):
         # Add a new user
-        # TODO: Add this / check this
         # TODO: validate email/password strength
         # TODO: send verification email to new user
 
@@ -237,7 +236,6 @@ api.add_resource(GetImage, '/image/<filename>')
 class SingleUserResource(Resource):
     # decorators = [auth.login_required]
 
-    # TODO: PATCH user.
     def get(self, id):
         found = User.query.filter_by(id=id).first()
 
@@ -344,7 +342,6 @@ class PotatoResource(Resource):
             data.append(current)
 
         response = make_response(jsonify(data))
-        # response.headers['Access-Control-Allow-Origin'] = '*'  # TODO: put backend on diff server?
 
         return response
 
@@ -373,7 +370,6 @@ class FilterPotatoesResource(Resource):
             data.append(current)
 
         response = make_response(jsonify(data))
-        # response.headers['Access-Control-Allow-Origin'] = '*'  # TODO: put backend on diff server?
 
         return response
 
@@ -422,7 +418,7 @@ class UsersPotatoesResource(Resource):
             data.append(current)
 
         response = make_response(jsonify(data))
-        response.headers['Access-Control-Allow-Origin'] = '*'  # TODO: put backend on diff server?
+        # response.headers['Access-Control-Allow-Origin'] = '*'  # TODO: put backend on diff server?
 
         return response
 
@@ -544,10 +540,6 @@ class Potatoes(db.Model):
     price_per_kilo = db.Column('price', db.DECIMAL(10, 2), nullable=False)
     description = db.Column('description', db.String(200), nullable=False)
     photo_path = db.Column('photo_path', db.String(300), nullable=True)
-
-    def import_image(self, request):
-        if 'image' in request.files:
-            self.image_filename = save(request.files['image'])
 
 
 class User(db.Model):

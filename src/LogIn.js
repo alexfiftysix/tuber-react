@@ -24,12 +24,21 @@ export class LogIn extends React.Component {
             return;
         }
 
-        let url = 'http://' + this.state.email + ':' + this.state.password + '@localhost:5000/get_token/';
-        console.log(url);
+        let xhr = new XMLHttpRequest();
+        const url = 'http://localhost:5000/get_token';
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => this.setState(data));
+        xhr.open('GET', url, true);
+
+        xhr.setRequestHeader("Authorization", "Basic " + btoa(this.state.email + ":" + this.state.password));
+        // xhr.withCredentials = true;
+        xhr.onreadystatechange = function () {
+            // if (xhr.readyState === 4 && xhr.status === 200) {
+            //     alert(xhr.responseText);
+            // }
+            alert(xhr.responseText);
+        };
+
+        xhr.send();
     }
 
     handleChange(event) {

@@ -3,7 +3,6 @@ import {Card} from './Card'
 
 // Displays a bunch of cards.
 // Cards are currently used to show potatoes for sale, but could be used for profiles overviews also
-// TODO: Sending endless requests again...
 export class Deck extends React.Component {
     constructor(props) {
         super(props);
