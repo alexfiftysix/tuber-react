@@ -20,9 +20,9 @@ class App extends Component {
         }
     }
 
-    set_token(token) {
-        console.log("set_token called! - " + token);
-        this.setState({message: "HELLO"});
+    getToken(event) {
+        event.preventDefault();
+        console.log(localStorage.getItem('token'));
     }
 
 
@@ -39,6 +39,7 @@ class App extends Component {
                     <Route path="/login" render={props => <LogIn set_token={this.set_token} />} />
                     <Route path="/search" component={SearchPotatoes}/>
                 </div>
+                <button onClick={this.getToken}>Get Token</button>
             </main>
         );
     }

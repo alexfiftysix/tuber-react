@@ -25,8 +25,10 @@ export class LogIn extends React.Component {
 
         fetch(url, {method: 'GET', headers: headers})
             .then(response => response.json())
+            .then(data => localStorage.setItem('token', data.token));
             // .then(data => console.log(data['token']))
-            .then(data => this.props.set_token(data.token));
+            // .then(data => this.props.set_token(data.token));
+
     }
 
     handleChange(event) {
@@ -38,6 +40,7 @@ export class LogIn extends React.Component {
             [name]: value
         });
     }
+
 
     render() {
         return (
