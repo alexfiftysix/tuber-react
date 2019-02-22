@@ -11,6 +11,21 @@ import {LogIn} from "./LogIn";
 import {SearchPotatoes} from "./SearchPotatoes";
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            token: '',
+            message: ''
+        }
+    }
+
+    set_token(token) {
+        console.log("set_token called! - " + token);
+        this.setState({message: "HELLO"});
+    }
+
+
     render() {
         return (
             <main className="App">
@@ -21,7 +36,7 @@ class App extends Component {
                     <Route path="/profile/:id" component={Profile}/>
                     <Route path="/profile+update/:id" component={UpdateProfileForm}/>
                     <Route path="/signup" component={UserSignUp}/>
-                    <Route path="/login" component={LogIn}/>
+                    <Route path="/login" render={props => <LogIn set_token={this.set_token} />} />
                     <Route path="/search" component={SearchPotatoes}/>
                 </div>
             </main>

@@ -285,9 +285,7 @@ class GetUsers(Resource):
             current = {
                 'id': user.id,
                 'email': user.email,
-                'name': user.name,
-                'address': user.address,
-                'rating': user.rating
+                'name': user.name
             }
             response.append(current)
 
@@ -528,6 +526,20 @@ class TokenGenerator(Resource):
 api.add_resource(TokenGenerator, '/get_token')
 
 
+class TokenDecode(Resource):
+    decorators = [auth.login_required]
+
+    def get(self):
+        user = User.query.filter_by(email=g.user.email).first()
+        if not user:
+            return {'message': 'user does not exist'}
+
+        return user.get_user()
+
+
+api.add_resource(TokenDecode, '/token_decode')
+
+
 # ------ #
 # Models #
 # ------ #
@@ -575,6 +587,13 @@ class User(db.Model):
             return None  # invalid token
         user = User.query.get(data['id'])
         return user
+
+    def get_user(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'name': self.name
+        }
 
 
 class Address(db.Model):

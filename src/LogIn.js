@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 export class LogIn extends React.Component {
     constructor(props) {
         super(props);
@@ -19,26 +18,15 @@ export class LogIn extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        if (!this.state.email || !this.state.password) {
-            alert('Please include email and password!');
-            return;
-        }
-
-        let xhr = new XMLHttpRequest();
         const url = 'http://localhost:5000/get_token';
+        let headers = new Headers();
 
-        xhr.open('GET', url, true);
+        headers.append('Authorization', 'Basic ' + window.btoa(this.state.email + ':' + this.state.password));
 
-        xhr.setRequestHeader("Authorization", "Basic " + btoa(this.state.email + ":" + this.state.password));
-        // xhr.withCredentials = true;
-        xhr.onreadystatechange = function () {
-            // if (xhr.readyState === 4 && xhr.status === 200) {
-            //     alert(xhr.responseText);
-            // }
-            alert(xhr.responseText);
-        };
-
-        xhr.send();
+        fetch(url, {method: 'GET', headers: headers})
+            .then(response => response.json())
+            // .then(data => console.log(data['token']))
+            .then(data => this.props.set_token(data.token));
     }
 
     handleChange(event) {
