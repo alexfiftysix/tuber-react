@@ -347,6 +347,24 @@ class PotatoResource(Resource):
 api.add_resource(PotatoResource, '/potatoes')
 
 
+class GetFullPotatoResource(Resource):
+    def get(self, id):
+        found = User.query.filter_by(id=id).first()
+        potato = Potatoes.query.filter_by(id=id).first()
+
+        if not potato:
+            return {'message': 'potato does not exist'}
+
+        # print(potato.test())
+
+        # print(potato.full_potato().first())
+        #
+        return potato.full_potato()
+
+
+api.add_resource(GetFullPotatoResource, '/full_potato/<id>')
+
+
 class FilterPotatoesResource(Resource):
     def get(self, price_low, price_high):
         # Get all potatoes
@@ -552,6 +570,36 @@ class Potatoes(db.Model):
     price_per_kilo = db.Column('price', db.DECIMAL(10, 2), nullable=False)
     description = db.Column('description', db.String(200), nullable=False)
     photo_path = db.Column('photo_path', db.String(300), nullable=True)
+
+    def test(self):
+        return {'message': 'it works'}
+
+    def full_potato(self):
+        """
+        Return a dict of all information about the potato, and relevant info about the owner and their address
+        :return:
+        """
+        owner = User.query.filter_by(id=self.owner).first()
+        if not owner:
+            return {'message': 'Potato has no owner'}
+
+        address = Address.query.filter_by(owner=self.owner).first()
+        if not address:
+            return {'message': 'Owner has no address'}
+
+        data = {
+            'id': self.id,
+            'owner': self.owner,
+            'type': self.type,
+            'amount': float(self.amount),
+            'price_per_kilo': float(self.price_per_kilo),
+            'description': self.description,
+            'owner_name': owner.name,
+            'owner_email': owner.email,
+            'owner_suburb': address.suburb
+        }
+
+        return data
 
 
 class User(db.Model):

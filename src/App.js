@@ -9,6 +9,7 @@ import {UpdateProfileForm} from "./UpdateProfileForm";
 import {UserSignUp} from "./UserSignUp";
 import {LogIn} from "./LogIn";
 import {SearchPotatoes} from "./SearchPotatoes";
+import {BuyPotato} from "./BuyPotato";
 
 class App extends Component {
     constructor(props) {
@@ -62,6 +63,7 @@ class App extends Component {
             routes.push(<Route key={'profile'} path="/profile/:id" component={Profile}/>);
             routes.push(<Route key={'profile_update'} path="/profile+update/:id" component={UpdateProfileForm}/>);
             routes.push(<Route key={'search'} path="/search" component={SearchPotatoes}/>);
+            routes.push(<Route key={'one_potato'} path="/potato/:id" component={BuyPotato}/>);
         } else {
             routes.push(<Route key={'signup'} path="/signup" component={UserSignUp}/>);
             routes.push(<Route key={'login'} path="/login" render={props => <LogIn set_token={this.set_token}/>}/>);
