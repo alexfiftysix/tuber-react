@@ -69,6 +69,7 @@ export class SearchPotatoes extends React.Component {
                 price={potato['price']}
                 amount={potato['amount']}
                 description={potato['description']}
+                id={potato['id']}
             />);
 
             cards.push(next);

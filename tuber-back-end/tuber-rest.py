@@ -297,6 +297,10 @@ api.add_resource(GetUsers, '/user')
 
 
 class PotatoResource(Resource):
+    '''
+    Resource for all potatoes
+    Add new potato, view all potatoes
+    '''
     def post(self):
         # Add new potato
         new_potato = Potatoes(
@@ -343,6 +347,7 @@ class PotatoResource(Resource):
         response = make_response(jsonify(data))
 
         return response
+
 
 
 api.add_resource(PotatoResource, '/potatoes')
@@ -395,6 +400,9 @@ api.add_resource(FilterPotatoesResource, '/potatoes/low=<price_low>+high=<price_
 
 
 class SinglePotatoResource(Resource):
+    '''
+    Resource for geting and patching an individual potato
+    '''
     def get(self, id):
         pot = Potatoes.query.filter_by(id=id).first()
 
@@ -410,6 +418,14 @@ class SinglePotatoResource(Resource):
         }
 
         return [current]
+
+    def patch(self, id):
+        pot = Potatoes.query.filter_by(id=id).first()
+
+        if request.form.get('amount'):
+            pot.amount = request.form.get('amount')
+
+        db.session.commit()
 
 
 api.add_resource(SinglePotatoResource, '/potatoes/<id>')
