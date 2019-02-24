@@ -25,7 +25,10 @@ export class LogIn extends React.Component {
 
         fetch(url, {method: 'GET', headers: headers})
             .then(response => response.json())
-            .then(data => localStorage.setItem('token', data.token));
+            .then(data => {
+                localStorage.setItem('token', data.token);
+                window.location.replace('http://localhost:3000');
+            });
             // .then(data => console.log(data['token']))
             // .then(data => this.props.set_token(data.token));
 
