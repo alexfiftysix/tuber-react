@@ -43,7 +43,7 @@ class App extends Component {
             })
             // .then(data => console.log(data));
             .then(data => this.setState({loggedIn: true, userId: data.id}));
-    }s
+    }
 
     getToken() {
         console.log(localStorage.getItem('token'));
@@ -70,11 +70,10 @@ class App extends Component {
 
         return (
             <main className="App">
-                <Nav isLoggedIn={this.state.loggedIn}/>
+                <Nav isLoggedIn={this.state.loggedIn} id={this.state.userId}/>
                 <div className={'content'}>
                     {routes}
                 </div>
-                <button onClick={this.getToken}>Get Token</button>
             </main>
         );
     }

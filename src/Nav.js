@@ -5,6 +5,7 @@ export class Nav extends React.Component {
 
     logOut() {
         localStorage.setItem('token', 'FakeToken');
+        window.location.replace('http://localhost:3000');
     }
 
     render() {
@@ -13,7 +14,7 @@ export class Nav extends React.Component {
 
 
         if (this.props.isLoggedIn) {
-            links.push(<li key={'nav_profile'}><Link to="/profile/1">Profile</Link></li>);
+            links.push(<li key={'nav_profile'}><Link to={"/profile/" + this.props.id}>My profile</Link></li>);
             links.push(<li key={'nav_search'}><Link to="/search">Search</Link></li>);
         } else {
             links.push(<li key={'nav_login'}><Link to="/login">Log In</Link></li>);
