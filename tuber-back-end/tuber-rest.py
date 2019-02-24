@@ -144,6 +144,7 @@ class FullUserResource(Resource):
         found_potatoes = Potatoes.query.filter_by(owner=found_user.id)
         for potato in found_potatoes:
             new = {
+                'id': potato.id,
                 'type': potato.type,
                 'amount': float(potato.amount),
                 'price_per_kilo': float(potato.price_per_kilo),
@@ -594,6 +595,7 @@ class Potatoes(db.Model):
             'amount': float(self.amount),
             'price_per_kilo': float(self.price_per_kilo),
             'description': self.description,
+            'photo_path': self.photo_path,
             'owner_name': owner.name,
             'owner_email': owner.email,
             'owner_suburb': address.suburb

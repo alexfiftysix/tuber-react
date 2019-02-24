@@ -39,6 +39,7 @@ export class Profile extends React.Component {
                     price={potato['price_per_kilo']} // WHy is this different to in SearchPotatoes?
                     amount={potato['amount']}
                     description={potato['description']}
+                    id={potato['id']}
                 />);
             cards.push(next);
         }

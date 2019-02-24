@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 export class Card extends React.Component {
     constructor(props) {
@@ -25,7 +26,7 @@ export class Card extends React.Component {
                     <p className="card-text description">{this.props.description}</p>
                     <p className="card-text">{this.props.location ? 'Location: ' + this.props.location : null}</p>
                     <p className="card-text">{this.props.owner ? 'Owner: ' + this.props.owner : ''}</p>
-                    <button className="btn btn-primary">Buy</button>
+                    <Link to={'/potato/' + this.props.id}><button className="btn btn-primary">Buy</button></Link>
                 </div>
             </div>
         );
