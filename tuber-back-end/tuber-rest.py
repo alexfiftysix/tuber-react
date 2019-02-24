@@ -10,6 +10,8 @@ from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSign
 from passlib.hash import sha256_crypt
 from passlib.apps import custom_app_context as pwd_context
 from werkzeug.utils import secure_filename
+import datetime
+import json
 
 ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'gif', 'png']
 
@@ -301,6 +303,7 @@ class PotatoResource(Resource):
     Resource for all potatoes
     Add new potato, view all potatoes
     '''
+
     def post(self):
         # Add new potato
         new_potato = Potatoes(
@@ -347,7 +350,6 @@ class PotatoResource(Resource):
         response = make_response(jsonify(data))
 
         return response
-
 
 
 api.add_resource(PotatoResource, '/potatoes')
@@ -403,6 +405,7 @@ class SinglePotatoResource(Resource):
     '''
     Resource for geting and patching an individual potato
     '''
+
     def get(self, id):
         pot = Potatoes.query.filter_by(id=id).first()
 
@@ -569,10 +572,43 @@ class TokenDecode(Resource):
         if not user:
             return {'message': 'user does not exist'}
 
-        return user.get_user()
+        return user.get()
 
 
 api.add_resource(TokenDecode, '/token_decode')
+
+
+class OrderResource(Resource):
+    def post(self):
+        order = Order()
+        if not request.form.get('seller') or \
+                not request.form.get('buyer') or \
+                not request.form.get('product') or \
+                not request.form.get('amount'):
+            return {'message': 'must include seller, buyer, product and amount'}
+
+        order.seller = request.form.get('seller')
+        order.buyer = request.form.get('buyer')
+        order.product = request.form.get('product')
+        order.amount = request.form.get('amount')
+        order.date = datetime.datetime.now()
+
+        db.session.add(order)
+        db.session.commit()
+
+        return order.get()
+
+
+api.add_resource(OrderResource, '/order')
+
+
+class SingleOrderResource(Resource):
+    def get(self, id):
+        order = Order.query.filter_by(id=id).first()
+        return order.get_full()
+
+
+api.add_resource(SingleOrderResource, '/order/<id>')
 
 
 # ------ #
@@ -590,6 +626,26 @@ class Potatoes(db.Model):
 
     def test(self):
         return {'message': 'it works'}
+
+    def get(self):
+        return {
+            'id': self.id,
+            'owner': self.owner,
+            'type': self.type,
+            'amount': float(self.amount),
+            'price_per_kilo': float(self.price_per_kilo),
+            'description': self.description,
+            'photo_path': self.photo_path,
+        }
+
+    def get_minimal(self):
+        return {
+            'owner': self.owner,
+            'type': self.type,
+            'amount': float(self.amount),
+            'price_per_kilo': float(self.price_per_kilo),
+            'description': self.description,
+        }
 
     def full_potato(self):
         """
@@ -654,12 +710,25 @@ class User(db.Model):
         user = User.query.get(data['id'])
         return user
 
-    def get_user(self):
+    def get(self):
         return {
             'id': self.id,
             'email': self.email,
             'name': self.name
         }
+
+    def get_with_address(self):
+        address = Address.query.filter_by(owner=self.id).first()
+        if not address:
+            return {'message': 'User has no address'}
+
+        address = address.get()
+        user = self.get()
+
+        user = {**user, **address}
+        # user.pop('owner')
+
+        return user
 
 
 class Address(db.Model):
@@ -671,14 +740,69 @@ class Address(db.Model):
     suburb = db.Column('suburb', db.String(250), nullable=False)
     country = db.Column('country', db.String(250), nullable=False)
 
+    def get(self):
+        return {
+            'owner': self.owner,
+            'unit_number': self.unit_number,
+            'street_number': self.street_number,
+            'street_name': self.street_name,
+            'suburb': self.suburb,
+            'country': self.country,
+        }
+
 
 class Rating(db.Model):
+    '''
+    Used to store reviews made after a sale
+    Get average of all users ratings for user overall rating
+    '''
     __tablename__ = 'rating'
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
     reviewer = db.Column('reviewer', db.Integer, db.ForeignKey('user.id'), nullable=False)  # user who left review
     reviewee = db.Column('reviewee', db.Integer, db.ForeignKey('user.id'), nullable=False)  # user being reviewed
     rating = db.Column('rating', db.Integer, nullable=False)  # from 1-5 inclusive
     comment = db.Column('comment', db.String(200), nullable=True)
+
+
+class Order(db.Model):
+    '''
+    Stores a transaction from one user to another
+    '''
+    __tablename__ = 'order'
+    id = db.Column('id', db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    seller = db.Column('seller', db.Integer, nullable=False)
+    buyer = db.Column('buyer', db.Integer, nullable=False)
+    product = db.Column('product', db.Integer, nullable=False)  # A potato
+    amount = db.Column('amount', db.String(2000), nullable=False)
+    date = db.Column('date', db.DateTime, nullable=False)
+
+    # TODO: Work out the whole datetime business
+
+    def get(self):
+        return {
+            'id': self.id,
+            'seller': self.seller,
+            'buyer': self.buyer,
+            'product': self.product,
+            'amount': self.amount,
+            'date': str(self.date)
+        }
+
+    def get_full(self):
+        seller = User.query.filter_by(id=self.seller).first()
+        buyer = User.query.filter_by(id=self.buyer).first()
+        product = Potatoes.query.filter_by(id=self.product).first()
+
+        if not seller or not buyer or not product:
+            return {'message': 'no good'}
+
+        order = self.get()
+
+        order['seller'] = seller.get_with_address()
+        order['buyer'] = buyer.get_with_address()
+        order['product'] = product.get_minimal()
+
+        return order
 
 
 if __name__ == '__main__':
