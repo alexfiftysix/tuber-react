@@ -1,4 +1,12 @@
+# Tuber
 
+##### Connecting people with too many potatoes to people without enough potatoes
+
+Some people love growing potatoes, but they're just too good at it.
+Tuber is a web information system allowing users who grow potatoes at home to sell and trade these to their neighbours. 
+Growers can upload photos and information about potatoes they've grown, and eaters can search for potatoes by location, price and type.
+Through sourcing locally grown potatoes from neighbours we can reduce the environmental cost of potato eating.
+With considerable research and development we can one day hope to expand into other vegatables, or even fruits.
 
 ### What we want to be able to do
 - users
