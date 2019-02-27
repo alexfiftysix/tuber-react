@@ -668,6 +668,7 @@ class Potatoes(db.Model):
             'price_per_kilo': float(self.price_per_kilo),
             'description': self.description,
             'photo_path': self.photo_path,
+            'owner_id': owner.id,
             'owner_name': owner.name,
             'owner_email': owner.email,
             'owner_suburb': address.suburb

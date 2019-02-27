@@ -10,8 +10,11 @@ import {UserSignUp} from "./UserSignUp";
 import {LogIn} from "./LogIn";
 import {SearchPotatoes} from "./SearchPotatoes";
 import {BuyPotato} from "./BuyPotato";
+import {UserIdContextProvider} from "./UserIdContext";
 
 class App extends Component {
+
+
     constructor(props) {
         super(props);
 
@@ -29,8 +32,6 @@ class App extends Component {
         if (!token) {
             alert("No token");
         }
-
-        let loggedIn = false;
 
         const url = 'http://localhost:5000/token_decode';
         let headers = new Headers();
@@ -71,12 +72,14 @@ class App extends Component {
 
 
         return (
-            <main className="App">
-                <Nav isLoggedIn={this.state.loggedIn} id={this.state.userId}/>
-                <div className={'content'}>
-                    {routes}
-                </div>
-            </main>
+            <UserIdContextProvider>
+                <main className="App">
+                    <Nav isLoggedIn={this.state.loggedIn} id={this.state.userId}/>
+                    <div className={'content'}>
+                        {routes}
+                    </div>
+                </main>
+            </UserIdContextProvider>
         );
     }
 }
