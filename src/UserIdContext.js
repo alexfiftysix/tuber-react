@@ -1,8 +1,7 @@
 import React from "react";
 
-export const UserIdContext = React.createContext(0); // TODO: Work out context and apply it
+export const UserIdContext = React.createContext(0);
 
-// TODO: More useful names
 export class UserIdContextProvider extends React.Component {
     constructor(props) {
         super(props);

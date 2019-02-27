@@ -13,8 +13,6 @@ import {BuyPotato} from "./BuyPotato";
 import {UserIdContextProvider} from "./UserIdContext";
 
 class App extends Component {
-
-
     constructor(props) {
         super(props);
 

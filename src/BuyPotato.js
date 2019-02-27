@@ -1,6 +1,7 @@
 import React from 'react'
 import {UserIdContext} from "./UserIdContext";
 
+// TODO: Get context into your form sending function
 export class BuyPotato extends React.Component {
     // static contextType = myContext;
     constructor(props) {
